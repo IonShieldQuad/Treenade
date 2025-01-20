@@ -1,0 +1,12 @@
+{
+	"name": "treenade",
+	"version": "1.0.8",
+	"title": "Lily's Treenades",
+	"author": "MsBinaryLily",
+	"description": "Want to spread trees instead of blowing them up? What a weirdo. but here's a tool just for you!",
+	"factorio_version": "2.0",
+	"dependencies": [
+		"base >= 2.0",
+		"space-age"
+		]
+}
