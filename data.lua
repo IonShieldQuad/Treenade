@@ -94,7 +94,8 @@ local dummy = {
 data:extend({ dummy })
 
 -- projectile
-local treenade_seed = {
+local treenade_seed = 
+{
   type = "projectile",
   name = "treenade_seed",
   flags = { "not-on-map" },
@@ -119,7 +120,6 @@ local treenade_seed = {
         }
       }
     },
-
   },
   --light = { intensity = 0.1, size = 1 },
   animation =
@@ -132,7 +132,7 @@ local treenade_seed = {
     priority = "high"
   }
 }
-data.extend(treenade_seed)
+data:extend({treenade_seed})
 
 -- item
 local treenade_item = 
@@ -196,7 +196,7 @@ local treenade_item =
   weight = (settings.startup["treenade_stack_size"].value / 100.0)*kg
 }
 
-data.extend(treenade_item)
+data:extend({treenade_item})
 
 -- projectile
 local treenade = {
@@ -234,12 +234,12 @@ local treenade = {
     scale = 0.5
   },
 }
-data.extend(treenade)
+data:extend({treenade})
 
 --item
 local treessile_item = {
   type = "ammo",
-  name = "treenade",
+  name = "treessile",
   icon = "__treenade__/graphics/icons/treessile.png",
   ammo_category = "rocket",
   ammo_type =
@@ -268,7 +268,7 @@ local treessile_item = {
   stack_size = settings.startup["treenade_stack_size"].value,
   weight = 200 * kg
 }
-data.extend(treessile_item)
+data:extend({treessile_item})
 
 --entity
 local treessile = table.deepcopy(data.raw["projectile"]["rocket"])
@@ -276,7 +276,7 @@ treessile.name = "treessile"
 treessile.action = boom_action
 treessile.animation = require("__base__.prototypes.entity.rocket-projectile-pictures").animation({ 0.75, 1.0, 0.2 })
 
-data.extend(treessile)
+data:extend({treessile})
 
 
 data:extend(
@@ -365,7 +365,7 @@ data:extend(
   {
     type = "technology",
     name = "treessiles",
-    icon_size = 128,
+    icon_size = 256,
     icon = "__treenade__/graphics/technology/treessiles.png",
     prerequisites = { "rocketry", "treenades" },
     unit =
