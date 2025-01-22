@@ -4,11 +4,39 @@ local item_sounds = require("__base__.prototypes.item_sounds")
 local sounds = require("__base__.prototypes.entity.sounds")
 local explosion_animations = require("__base__.prototypes.entity.explosion-animations")
 
+
+
+-- getting tiles
+local allowed_tiles = data.raw["plant"]["tree-plant"].autoplace["tile_restriction"]
+local all_tiles = data.raw["tile"]
+
+
+local allowed_tiles_lookup = {}
+for _, name in ipairs(allowed_tiles) do
+  allowed_tiles_lookup[name] = true
+end
+
+data:extend({
+  {
+    type = "collision-layer",
+    name = "layer_treenade"
+  }
+})
+
+-- to allow plant to only spawn on valid ones
+for _, tile in pairs(all_tiles) do
+  if tile and tile.collision_mask then
+    if not allowed_tiles_lookup[tile.name] then
+      tile.collision_mask.layers["layer_treenade"] = true
+    end
+  end
+end
+
 -- entity
 local dummy = {
   type = "plant",
   name = "tree-plant-dummy",
-  collision_mask = { layers = { water_tile = true } },
+  collision_mask = { layers = { water_tile = true }, {layer_treenade = true} },
   growth_ticks = 9999999,
   icon = "__space-age__/graphics/icons/tree-seed.png",
   -- icon_size = 64,
@@ -174,7 +202,8 @@ data:extend(
             type = "create-entity",
             show_in_tooltip = false,
               entity_name = "tree-plant-dummy",
-            trigger_created_entity = true
+            trigger_created_entity = true,
+              tile_collision_mask = { layers = { water_tile = true }, { layer_treenade = true } }
           }
         }
       },
