@@ -29,8 +29,8 @@ data:extend({
     {
         type = "bool-setting",
         name = "treenade_drop_on_concrete",
-        setting_type = "runtime-global",
-        default_value = true,
-        order = "s"
+        setting_type = "startup",
+        default_value = false,
+        order = "d"
     }
 })

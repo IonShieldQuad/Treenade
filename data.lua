@@ -4,12 +4,20 @@ local item_sounds = require("__base__.prototypes.item_sounds")
 local sounds = require("__base__.prototypes.entity.sounds")
 local explosion_animations = require("__base__.prototypes.entity.explosion-animations")
 
-
+-- There should be a better way to lookup concrete
+local concrete_tiles = {
+  { "concrete", data.raw["tile"]["concrete"] },
+  { "refined-concrete", data.raw["tile"]["refined-concrete"] },
+  { "hazard-concrete-left", data.raw["tile"]["hazard-concrete-left"] },
+  { "hazard-concrete-right", data.raw["tile"]["hazard-concrete-right"] },
+  { "refined-hazard-concrete-left", data.raw["tile"]["refined-hazard-concrete-left"] },
+  { "refined-hazard-concrete-right", data.raw["tile"]["refined-hazard-concrete-right"] },
+  { "foundation", data.raw["tile"]["foundation"] },
+}
 
 -- getting tiles
 local allowed_tiles = data.raw["plant"]["tree-plant"].autoplace["tile_restriction"]
 local all_tiles = data.raw["tile"]
-
 
 local allowed_tiles_lookup = {}
 for _, name in ipairs(allowed_tiles) do
@@ -31,6 +39,14 @@ for _, tile in pairs(all_tiles) do
     end
   end
 end
+if (not settings.startup["treenade_drop_on_concrete"].value) then
+  for name, tile in pairs(concrete_tiles) do
+    if tile and tile.collision_mask then
+      tile.collision_mask.layers["layer_treenade"] = true
+    end
+  end
+end
+data.raw["tile"]["nuclear-ground"].collision_mask.layers["layer_treenade"] = true
 
 -- action
 local boom_action = {
@@ -116,7 +132,7 @@ local treenade_seed =
           trigger_created_entity = true,
           check_buildability = true,
           find_non_colliding_position = true,
-          tile_collision_mask = { layers = { water_tile = true }, { layer_treenade = true }, { object = true }, { is_object = true }, { is_lower_object = true }, { concrete = true }, { buildings = true } }
+          tile_collision_mask = { layers = { water_tile = true }, { layer_treenade = true }, { object = true }, { is_object = true }, { is_lower_object = true }, { concrete = true }, { buildings = true }, {ghost = true} }
         }
       }
     },
