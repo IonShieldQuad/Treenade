@@ -1,26 +1,44 @@
-
 script.on_event(defines.events.on_trigger_created_entity, function(event)
-    
     --local nuketile = prototypes.tile["nuclear-ground"];
     if event.entity.name == "tree-plant-dummy" then
-        catalogue_concrete()
+        
+        
+        game.print("setting " .. tostring(settings.startup["treenade_drop_on_concrete"].value))
+        
+        
         entity = event.entity
         if (entity.valid) then
             local tile = entity.surface.get_tile(entity.position.x, entity.position.y)
-            --game.print(tile.name)
+            alltiles = prototypes.tile
+            artificial_tiles = {}
+            for name, t in pairs(alltiles) do
+                if (t.subgroup and t.subgroup.name == "artificial-tiles") then
+                    artificial_tiles[name] = t
+                end
+            end
+
+            --[[ debug stuff
+                for n, t in pairs(artificial_tiles) do
+                cl = t.collision_mask.layers
+
+                buf1 = "For " .. n
+                for a, b in pairs(cl) do
+                    buf1 = buf1 .. "\n" .. tostring(a) .. ": " .. tostring(b)
+                end
+                game.print(buf1)
+            end--]]
+
             if (not (tile.name == "nuclear-ground")) then
-                --game.print("k")
-                if (storage.treenade_concrete_tiles[tile.name]) then
-                    --game.print(tile.name)
-                    --game.print(settings.global["treenade_drop_on_concrete"].value)
-                    --if (settings.startup["treenade_drop_on_concrete"].value) then
-                    --    local items = entity.surface.spill_item_stack({
-                    --        stack = {name = "tree-seed"},
-                    --        position = entity.position,
-                    --        allow_belts = false,
-                    --        enable_looted = true
-                    --    })
-                    --end
+                if (artificial_tiles[tile.name] ~= nil) then 
+                    if (settings.startup["treenade_drop_on_concrete"].value) then
+                        local items = entity.surface.spill_item_stack({
+                            stack = {name = "tree-seed"},
+                            position = entity.position,
+                            allow_belts = false,
+                            enable_looted = true,
+                            max_radius = 5.0,
+                        })
+                    end
                 else
                 entity.surface.create_entity {
                 name = prototypes.item["tree-seed"].plant_result,
@@ -33,16 +51,3 @@ script.on_event(defines.events.on_trigger_created_entity, function(event)
         entity.destroy()
     end
 end)
-
-function catalogue_concrete()
-    if storage.treenade_concrete_tiles == nil then
-        storage.treenade_concrete_tiles = {} 
-        storage.treenade_concrete_tiles["concrete"] = true
-        storage.treenade_concrete_tiles["refined-concrete"] = true
-        storage.treenade_concrete_tiles["hazard-concrete-left"] = true
-        storage.treenade_concrete_tiles["hazard-concrete-right"] = true
-        storage.treenade_concrete_tiles["refined-hazard-concrete-left"] = true
-        storage.treenade_concrete_tiles["refined-hazard-concrete-right"] = true
-        storage.treenade_concrete_tiles["foundation"] = true
-    end
-end

@@ -5,6 +5,7 @@ local sounds = require("__base__.prototypes.entity.sounds")
 local explosion_animations = require("__base__.prototypes.entity.explosion-animations")
 
 -- There should be a better way to lookup concrete
+--[[ And there is
 local concrete_tiles = {
   { "concrete", data.raw["tile"]["concrete"] },
   { "refined-concrete", data.raw["tile"]["refined-concrete"] },
@@ -14,6 +15,14 @@ local concrete_tiles = {
   { "refined-hazard-concrete-right", data.raw["tile"]["refined-hazard-concrete-right"] },
   { "foundation", data.raw["tile"]["foundation"] },
 }
+--]]
+
+local artificial_tiles = {}
+for name, tile in ipairs(data.raw["tile"]) do
+  if tile.subgroup and tile.subgroup == "artificial-tiles" then
+    artificial_tiles[name] = tile
+  end
+end
 
 -- getting tiles
 local allowed_tiles = data.raw["plant"]["tree-plant"].autoplace["tile_restriction"]
@@ -23,6 +32,13 @@ local allowed_tiles_lookup = {}
 for _, name in ipairs(allowed_tiles) do
   allowed_tiles_lookup[name] = true
 end
+
+if settings.startup["treenade_drop_on_concrete"].value then
+  for name, tile in pairs(artificial_tiles) do
+    allowed_tiles_lookup[name] = true
+  end
+end
+
 
 data:extend({
   {
@@ -39,8 +55,8 @@ for _, tile in pairs(all_tiles) do
     end
   end
 end
-if (not settings.startup["treenade_drop_on_concrete"].value) then
-  for name, tile in pairs(concrete_tiles) do
+if not (settings.startup["treenade_drop_on_concrete"].value) then
+  for name, tile in pairs(artificial_tiles) do
     if tile and tile.collision_mask then
       tile.collision_mask.layers["layer_treenade"] = true
     end
@@ -71,9 +87,9 @@ local boom_action = {
         {
           type = "projectile",
           projectile = "treenade_seed",
-          direction_deviation = 3.14,
+          direction_deviation = 6.283,
           starting_speed = 1,
-          starting_speed_deviation = 0.3
+          starting_speed_deviation = 0.7
         }
       }
 }
@@ -83,7 +99,20 @@ local boom_action = {
 local dummy = {
   type = "plant",
   name = "tree-plant-dummy",
-  collision_mask = { layers = { water_tile = true }, { layer_treenade = true }, { object = true }, { is_object = true }, { is_lower_object = true }, { concrete = true }, { buildings = true } },
+  collision_mask = { 
+    layers = { 
+      water_tile = true, 
+      layer_treenade = true, 
+      object = true, is_object = true, 
+      is_lower_object = true, 
+      doodad = true, 
+      ghost = true, 
+      lava_tile = true, 
+      rail = true, 
+      rail_support = true,
+      empty_space = true},
+    not_colliding_with_itself = true
+  },
   growth_ticks = 9999999,
   --surface_conditions = {
   --  property = "pressure",
@@ -94,7 +123,7 @@ local dummy = {
   -- icon_size = 64,
   flags = { "placeable-neutral", "player-creation", "placeable-off-grid" },
   selectable_in_game = false,
-  not_colliding_with_itself = true,
+  
   collision_box = data.raw["plant"]["tree-plant"].collision_box,
   --collision_box = { { -0.2, -0.2 }, { 0.2, 0.2 } },
   pictures = 
@@ -132,7 +161,20 @@ local treenade_seed =
           trigger_created_entity = true,
           check_buildability = true,
           find_non_colliding_position = true,
-          tile_collision_mask = { layers = { water_tile = true }, { layer_treenade = true }, { object = true }, { is_object = true }, { is_lower_object = true }, { concrete = true }, { buildings = true }, {ghost = true} }
+          tile_collision_mask = 
+          { layers = { 
+              water_tile = true, 
+              layer_treenade = true, 
+              object = true, is_object = true, 
+              is_lower_object = true, 
+              doodad = true, 
+              ghost = true, 
+              lava_tile = true, 
+              rail = true, 
+              rail_support = true,
+              empty_space = true},
+            not_colliding_with_itself = true
+          },
         }
       }
     },
@@ -159,6 +201,7 @@ local treenade_item =
   capsule_action =
   {
     type = "throw",
+
     attack_parameters =
     {
       type = "projectile",
@@ -222,7 +265,7 @@ local treenade = {
   hidden = true,
   acceleration = 0.05,
   action = boom_action,
-  light = {intensity = 0.5, size = 4},
+  light = {intensity = 0.25, size = 1},
   animation =
   {
     filename = "__treenade__/graphics/entity/treenade/treenade.png",
