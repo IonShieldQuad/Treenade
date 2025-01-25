@@ -3,7 +3,7 @@ script.on_event(defines.events.on_trigger_created_entity, function(event)
     if event.entity.name == "tree-plant-dummy" then
         
         
-        game.print("setting " .. tostring(settings.startup["treenade_drop_on_concrete"].value))
+        --game.print("setting " .. tostring(settings.startup["treenade_drop_on_concrete"].value))
         
         
         entity = event.entity
