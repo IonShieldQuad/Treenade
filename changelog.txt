@@ -1,4 +1,14 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.4.4
+Date: 2025-02-04
+  Changes:
+    - Made dropped seeds to be picked up for desconstruction automatically
+---------------------------------------------------------------------------------------------------
+Version: 1.4.3
+Date: 2025-01-31
+  Changes:
+    -  Rmoved homing from treessile as it was unnecessary
+---------------------------------------------------------------------------------------------------
 Version: 1.4.2
 Date: 2025-01-26
   Changes:
@@ -10,7 +20,7 @@ Date: 2025-01-25
     -  Remobed accidental debug message spam
 ---------------------------------------------------------------------------------------------------
 Version: 1.4.0
-Date: 2025-01-24s
+Date: 2025-01-24
   Changes:
     -  Looks like I finally did it
     -  Setting works and seeds should no longer disrupt ghosts and building construction
@@ -444,5 +454,6 @@ Date: ????
   Changes:
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.30
+Date: ????
   Changes:
     - Finally got the game to load without crashes. It still doesn't work though.

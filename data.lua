@@ -301,6 +301,7 @@ local treessile_item = {
   ammo_category = "rocket",
   ammo_type =
   {
+    target_type = "position",
     action =
     {
       type = "direct",
@@ -308,7 +309,7 @@ local treessile_item = {
       {
         type = "projectile",
         projectile = "treessile",
-        starting_speed = 0.1,
+        starting_speed = 0.3,
         source_effects =
         {
           type = "create-entity",

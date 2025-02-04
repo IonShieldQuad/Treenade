@@ -36,6 +36,7 @@ script.on_event(defines.events.on_trigger_created_entity, function(event)
                             position = entity.position,
                             allow_belts = false,
                             enable_looted = true,
+                            force = entity.force,
                             max_radius = 5.0,
                         })
                     end
