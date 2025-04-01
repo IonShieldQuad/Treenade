@@ -1,4 +1,3 @@
-
 local tech = require("__space-age__.prototypes.technology")
 local item_sounds = require("__base__.prototypes.item_sounds")
 local sounds = require("__base__.prototypes.entity.sounds")
@@ -29,7 +28,7 @@ local allowed_tiles = data.raw["plant"]["tree-plant"].autoplace["tile_restrictio
 local all_tiles = data.raw["tile"]
 
 local allowed_tiles_lookup = {}
-for _, name in ipairs(allowed_tiles) do
+for _, name in ipairs(allowed_tiles or {}) do
   allowed_tiles_lookup[name] = true
 end
 
@@ -66,32 +65,32 @@ data.raw["tile"]["nuclear-ground"].collision_mask.layers["layer_treenade"] = tru
 
 -- action
 local boom_action = {
+  {
+    type = "direct",
+    action_delivery =
+    {
+      type = "instant",
+      target_effects =
       {
-      type = "direct",
-      action_delivery =
-        {
-        type = "instant",
-        target_effects =
-        {
-          type = "create-entity",
-          entity_name = "explosion"
-        },
-        },
+        type = "create-entity",
+        entity_name = "explosion"
       },
-      {
-        type = "cluster",
-        cluster_count = settings.startup["treenade_seeds_per_nade"].value,
-        distance = settings.startup["treenade_boom_radius"].value,
-        distance_deviation = settings.startup["treenade_boom_radius"].value,
-        action_delivery =
-        {
-          type = "projectile",
-          projectile = "treenade_seed",
-          direction_deviation = 6.283,
-          starting_speed = 1,
-          starting_speed_deviation = 0.7
-        }
-      }
+    },
+  },
+  {
+    type = "cluster",
+    cluster_count = settings.startup["treenade_seeds_per_nade"].value,
+    distance = settings.startup["treenade_boom_radius"].value,
+    distance_deviation = settings.startup["treenade_boom_radius"].value,
+    action_delivery =
+    {
+      type = "projectile",
+      projectile = "treenade_seed",
+      direction_deviation = 6.283,
+      starting_speed = 1,
+      starting_speed_deviation = 0.7
+    }
+  }
 }
 
 
@@ -99,17 +98,19 @@ local boom_action = {
 local dummy = {
   type = "plant",
   name = "tree-plant-dummy",
-  collision_mask = { 
-    layers = { 
-      water_tile = true, 
-      layer_treenade = true, 
-      object = true, is_object = true, 
-      is_lower_object = true, 
-      ghost = true, 
-      lava_tile = true, 
-      rail = true, 
+  collision_mask = {
+    layers = {
+      water_tile = true,
+      layer_treenade = true,
+      object = true,
+      is_object = true,
+      is_lower_object = true,
+      ghost = true,
+      lava_tile = true,
+      rail = true,
       rail_support = true,
-      empty_space = true},
+      empty_space = true
+    },
     not_colliding_with_itself = true
   },
   growth_ticks = 9999999,
@@ -122,23 +123,23 @@ local dummy = {
   -- icon_size = 64,
   flags = { "placeable-neutral", "player-creation", "placeable-off-grid" },
   selectable_in_game = false,
-  
+
   collision_box = data.raw["plant"]["tree-plant"].collision_box,
   --collision_box = { { -0.2, -0.2 }, { 0.2, 0.2 } },
-  pictures = 
+  pictures =
   {
     {
       filename = "__space-age__/graphics/icons/tree-seed.png",
       width = 64,
       height = 64,
       scale = 0.2
-    },  
+    },
   }
 }
 data:extend({ dummy })
 
 -- projectile
-local treenade_seed = 
+local treenade_seed =
 {
   type = "projectile",
   name = "treenade_seed",
@@ -160,17 +161,20 @@ local treenade_seed =
           trigger_created_entity = true,
           check_buildability = true,
           find_non_colliding_position = true,
-          tile_collision_mask = 
-          { layers = { 
-              water_tile = true, 
-              layer_treenade = true, 
-              object = true, is_object = true, 
-              is_lower_object = true, 
-              ghost = true, 
-              lava_tile = true, 
-              rail = true, 
+          tile_collision_mask =
+          {
+            layers = {
+              water_tile = true,
+              layer_treenade = true,
+              object = true,
+              is_object = true,
+              is_lower_object = true,
+              ghost = true,
+              lava_tile = true,
+              rail = true,
               rail_support = true,
-              empty_space = true},
+              empty_space = true
+            },
             not_colliding_with_itself = true
           },
         }
@@ -188,10 +192,10 @@ local treenade_seed =
     priority = "high"
   }
 }
-data:extend({treenade_seed})
+data:extend({ treenade_seed })
 
 -- item
-local treenade_item = 
+local treenade_item =
 {
   type = "capsule",
   name = "treenade",
@@ -250,20 +254,20 @@ local treenade_item =
   pick_sound = item_sounds.grenade_inventory_pickup,
   drop_sound = item_sounds.grenade_inventory_move,
   stack_size = settings.startup["treenade_stack_size"].value,
-  weight = (settings.startup["treenade_stack_size"].value / 100.0)*kg
+  weight = (settings.startup["treenade_stack_size"].value / 100.0) * kg
 }
 
-data:extend({treenade_item})
+data:extend({ treenade_item })
 
 -- projectile
 local treenade = {
   type = "projectile",
   name = "treenade",
-  flags = {"not-on-map"},
+  flags = { "not-on-map" },
   hidden = true,
   acceleration = 0.05,
   action = boom_action,
-  light = {intensity = 0.25, size = 1},
+  light = { intensity = 0.25, size = 1 },
   animation =
   {
     filename = "__treenade__/graphics/entity/treenade/treenade.png",
@@ -291,7 +295,7 @@ local treenade = {
     scale = 0.5
   },
 }
-data:extend({treenade})
+data:extend({ treenade })
 
 --item
 local treessile_item = {
@@ -326,7 +330,7 @@ local treessile_item = {
   stack_size = settings.startup["treenade_stack_size"].value,
   weight = 200 * kg
 }
-data:extend({treessile_item})
+data:extend({ treessile_item })
 
 --entity
 local treessile = table.deepcopy(data.raw["projectile"]["rocket"])
@@ -334,118 +338,118 @@ treessile.name = "treessile"
 treessile.action = boom_action
 treessile.animation = require("__base__.prototypes.entity.rocket-projectile-pictures").animation({ 0.75, 1.0, 0.2 })
 
-data:extend({treessile})
+data:extend({ treessile })
 
 
 data:extend(
-{
-  -- recipe
   {
-    type = "recipe",
-    name = "treenade",
-    category = "crafting-with-fluid",
-    subgroup = "nauvis-agriculture",
-    allow_productivity = false,
-    enabled = false,
-    energy_required = 5,
-    surface_conditions = { -- tree seeds can only be planted on nauvis
+    -- recipe
     {
-      property = "pressure",
-      min = 1000,
-      max = 1000
-    }},
-    ingredients =
-    {
-      {type = "item", name = "steel-plate", amount = 3},
-      {type = "item", name = "electronic-circuit", amount = 3},
-      {type = "item", name = "explosives", amount = 2},
-      {type = "item",  name = "tree-seed", amount = settings.startup["treenade_seeds_per_nade"].value },
-      {type = "fluid", name = "water", amount = settings.startup["treenade_seeds_per_nade"].value * 10}
-    },
-    results = {{type="item", name="treenade", amount=1}}
-  },
-
-  -- recipe
-  {
-    type = "recipe",
-    name = "treessile",
-    category = "crafting-with-fluid",
-    subgroup = "nauvis-agriculture",
-    allow_productivity = false,
-    enabled = false,
-    energy_required = 5,
-    surface_conditions = { -- tree seeds can only be planted on nauvis
-    {
-      property = "pressure",
-      min = 1000,
-      max = 1000
-    }},
-    ingredients =
-    {
-      {type = "item", name = "rocket", amount = 1},
-      {type = "item",  name = "tree-seed", amount = settings.startup["treenade_seeds_per_nade"].value },
-      {type = "fluid", name = "water", amount = settings.startup["treenade_seeds_per_nade"].value * 10}
-    },
-    results = {{type="item", name="treessile", amount=1}}
-  },
-  
-  -- technology
-  {
-    type = "technology",
-    name = "treenades",
-    icon_size = 128,
-    icon = "__treenade__/graphics/technology/treenades.png",
-    prerequisites = {"explosives", "tree-seeding"},
-    unit =
-    {
-      count = 1000,
+      type = "recipe",
+      name = "treenade",
+      category = "crafting-with-fluid",
+      subgroup = "nauvis-agriculture",
+      allow_productivity = false,
+      enabled = false,
+      energy_required = 5,
+      surface_conditions = { -- tree seeds can only be planted on nauvis
+        {
+          property = "pressure",
+          min = 1000,
+          max = 1000
+        } },
       ingredients =
       {
-        {"automation-science-pack",   1},
-        {"logistic-science-pack",     1},
-        {"chemical-science-pack",     1},
-        {"space-science-pack",        1},
-        {"agricultural-science-pack", 1}
+        { type = "item",  name = "steel-plate",        amount = 3 },
+        { type = "item",  name = "electronic-circuit", amount = 3 },
+        { type = "item",  name = "explosives",         amount = 2 },
+        { type = "item",  name = "tree-seed",          amount = settings.startup["treenade_seeds_per_nade"].value },
+        { type = "fluid", name = "water",              amount = settings.startup["treenade_seeds_per_nade"].value * 10 }
       },
-      time = 60
+      results = { { type = "item", name = "treenade", amount = 1 } }
     },
-    effects =
-    {
-      {
-        type = "unlock-recipe",
-        recipe = "treenade"
-      }
-    },
-    order = "a[wood-processing]-b[treenade]"
-  },
 
-  --technology
-  {
-    type = "technology",
-    name = "treessiles",
-    icon_size = 256,
-    icon = "__treenade__/graphics/technology/treessiles.png",
-    prerequisites = { "rocketry", "treenades" },
-    unit =
+    -- recipe
     {
-      count = 4000,
+      type = "recipe",
+      name = "treessile",
+      category = "crafting-with-fluid",
+      subgroup = "nauvis-agriculture",
+      allow_productivity = false,
+      enabled = false,
+      energy_required = 5,
+      surface_conditions = { -- tree seeds can only be planted on nauvis
+        {
+          property = "pressure",
+          min = 1000,
+          max = 1000
+        } },
       ingredients =
       {
-        { "automation-science-pack",   1 },
-        { "logistic-science-pack",     1 },
-        { "chemical-science-pack",     1 },
-        { "space-science-pack",        1 },
-        { "agricultural-science-pack", 1 }
+        { type = "item",  name = "rocket",    amount = 1 },
+        { type = "item",  name = "tree-seed", amount = settings.startup["treenade_seeds_per_nade"].value },
+        { type = "fluid", name = "water",     amount = settings.startup["treenade_seeds_per_nade"].value * 10 }
       },
-      time = 60
+      results = { { type = "item", name = "treessile", amount = 1 } }
     },
-    effects =
+
+    -- technology
     {
+      type = "technology",
+      name = "treenades",
+      icon_size = 128,
+      icon = "__treenade__/graphics/technology/treenades.png",
+      prerequisites = { "explosives", "tree-seeding" },
+      unit =
       {
-        type = "unlock-recipe",
-        recipe = "treessile"
-      }
+        count = 1000,
+        ingredients =
+        {
+          { "automation-science-pack",   1 },
+          { "logistic-science-pack",     1 },
+          { "chemical-science-pack",     1 },
+          { "space-science-pack",        1 },
+          { "agricultural-science-pack", 1 }
+        },
+        time = 60
+      },
+      effects =
+      {
+        {
+          type = "unlock-recipe",
+          recipe = "treenade"
+        }
+      },
+      order = "a[wood-processing]-b[treenade]"
     },
-    order = "a[wood-processing]-b[treessile]"
-  }
-})
+
+    --technology
+    {
+      type = "technology",
+      name = "treessiles",
+      icon_size = 256,
+      icon = "__treenade__/graphics/technology/treessiles.png",
+      prerequisites = { "rocketry", "treenades" },
+      unit =
+      {
+        count = 4000,
+        ingredients =
+        {
+          { "automation-science-pack",   1 },
+          { "logistic-science-pack",     1 },
+          { "chemical-science-pack",     1 },
+          { "space-science-pack",        1 },
+          { "agricultural-science-pack", 1 }
+        },
+        time = 60
+      },
+      effects =
+      {
+        {
+          type = "unlock-recipe",
+          recipe = "treessile"
+        }
+      },
+      order = "a[wood-processing]-b[treessile]"
+    }
+  })
