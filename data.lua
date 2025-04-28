@@ -98,6 +98,10 @@ local boom_action = {
 local dummy = {
   type = "plant",
   name = "tree-plant-dummy",
+  autoplace = {
+    probability_expression = "0",
+    richness_expression = "0"
+  },
   collision_mask = {
     layers = {
       water_tile = true,
